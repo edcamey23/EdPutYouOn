@@ -5,7 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ed Put You On</title>
   <style>
-    /* (Same as before) */
+    /* General reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #111;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      color: #FF6347; /* Tomato color */
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.25rem;
+      background-color: #FF6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #e55342;
+    }
+    .song-display {
+      margin-top: 30px;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      padding: 15px;
+      background-color: #222;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    a {
+      color: #00aced;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -14,13 +68,11 @@
   <div class="song-display" id="songDisplay"></div>
 
   <script>
-    // Fetch songs from the JSON file
     async function loadSongs() {
       const response = await fetch('songs.json');
       return await response.json();
     }
 
-    // Get a random song and display it
     async function getPutOn() {
       const songs = await loadSongs();
       const randomIndex = Math.floor(Math.random() * songs.length);
