@@ -67,7 +67,7 @@
       const randomIndex = Math.floor(Math.random() * songs.length);
       const song = songs[randomIndex];
       const display = document.getElementById("songDisplay");
-      display.innerHTML = song.name;
+      display.innerHTML = `<a href="${song.link}" target="_blank">${song.title} by ${song.artist}</a>`;
     }
   </script>
 </body>
