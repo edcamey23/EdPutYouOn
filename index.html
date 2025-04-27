@@ -7,13 +7,14 @@
   <style>
     body {
       background-color: #f0f0f0;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       margin: 0;
+      padding: 20px;
     }
     h1 {
       margin-bottom: 20px;
@@ -28,26 +29,41 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
     button:hover {
       background-color: #45a049;
+      transform: scale(1.05);
     }
     .song-display {
       margin-top: 30px;
-      padding: 20px;
+      padding: 25px;
       background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      font-size: 1.5rem;
-      color: #555;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #222;
       text-align: center;
-      width: 80%;
+      width: 90%;
       max-width: 600px;
       min-height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .song-display.show {
+      opacity: 1;
+    }
+    .song-display a {
+      text-decoration: none;
+      color: #4CAF50;
+      transition: color 0.3s ease;
+    }
+    .song-display a:hover {
+      color: #388E3C;
     }
   </style>
 </head>
@@ -67,7 +83,13 @@
       const randomIndex = Math.floor(Math.random() * songs.length);
       const song = songs[randomIndex];
       const display = document.getElementById("songDisplay");
-      display.innerHTML = `<a href="${song.link}" target="_blank">${song.title} by ${song.artist}</a>`;
+      
+      // Make it fade in
+      display.classList.remove("show"); 
+      setTimeout(() => {
+        display.innerHTML = `<a href="${song.link}" target="_blank">${song.title} by ${song.artist}</a>`;
+        display.classList.add("show");
+      }, 100);
     }
   </script>
 </body>
