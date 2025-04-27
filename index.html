@@ -7,19 +7,44 @@
   <style>
     body {
       background-color: #f0f0f0;
-      font-family: 'Arial', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      transition: background-color 0.6s ease; /* Smooth background transition */
     }
-    h1 {
-      margin-bottom: 20px;
-      font-size: 3rem;
-      color: #333;
+    header {
+      background-color: #4CAF50;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      color: white;
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #c8f7c5;
+    }
+    .tab-content {
+      display: none;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .tab-content.active {
+      display: block;
     }
     button {
       background-color: #4CAF50;
@@ -30,6 +55,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.2s ease;
+      margin-top: 20px;
     }
     button:hover {
       background-color: #45a049;
@@ -48,9 +74,8 @@
       width: 90%;
       max-width: 600px;
       min-height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
       opacity: 0;
       transition: opacity 0.6s ease;
     }
@@ -65,32 +90,100 @@
     .song-display a:hover {
       color: #388E3C;
     }
+    form input, form textarea {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
+
+<header>
   <h1>Ed Put You On 🎶</h1>
+  <nav>
+    <a onclick="showTab('home')">Home</a>
+    <a onclick="showTab('about')">About</a>
+    <a onclick="showTab('suggestions')">Suggestions</a>
+  </nav>
+</header>
+
+<div id="home" class="tab-content active">
   <button onclick="getPutOn()">Get Put On</button>
   <div class="song-display" id="songDisplay">Click the button to get a song!</div>
+</div>
 
-  <script>
-    async function loadSongs() {
-      const response = await fetch('songs.json?cacheBust=' + new Date().getTime());
-      return await response.json();
-    }
+<div id="about" class="tab-content">
+  <h2>About</h2>
+  <p>Welcome to Ed Put You On!  
+  Every time you click "Get Put On," you'll discover a random song handpicked to broaden your music taste.  
+  Check back often — you never know what vibe you'll catch 🎶.</p>
+</div>
 
-    async function getPutOn() {
-      const songs = await loadSongs();
-      const randomIndex = Math.floor(Math.random() * songs.length);
-      const song = songs[randomIndex];
-      const display = document.getElementById("songDisplay");
-      
-      // Make it fade in
-      display.classList.remove("show"); 
-      setTimeout(() => {
-        display.innerHTML = `<a href="${song.link}" target="_blank">${song.title} by ${song.artist}</a>`;
-        display.classList.add("show");
-      }, 100);
-    }
-  </script>
+<div id="suggestions" class="tab-content">
+  <h2>Suggestions</h2>
+  <form onsubmit="submitSuggestion(event)">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="text" id="songSuggestion" placeholder="Song Suggestion" required>
+    <textarea id="message" placeholder="Optional Message"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <div id="thanksMessage" style="margin-top:20px; font-size:1.2rem; color:green;"></div>
+</div>
+
+<script>
+  function getRandomColor() {
+    const colors = ["#FFCDD2", "#F8BBD0", "#E1BEE7", "#D1C4E9", "#BBDEFB", "#B2EBF2", "#C8E6C9", "#DCEDC8", "#FFF9C4", "#FFE0B2", "#FFCCBC"];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  function showTab(tabName) {
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+      tab.classList.remove('active');
+    });
+    document.getElementById(tabName).classList.add('active');
+  }
+
+  async function loadSongs() {
+    const response = await fetch('songs.json?cacheBust=' + new Date().getTime());
+    return await response.json();
+  }
+
+  async function getPutOn() {
+    const songs = await loadSongs();
+    const randomIndex = Math.floor(Math.random() * songs.length);
+    const song = songs[randomIndex];
+    const display = document.getElementById("songDisplay");
+
+    display.classList.remove("show");
+
+    setTimeout(() => {
+      display.innerHTML = `<a href="${song.link}" target="_blank">${song.title} by ${song.artist} 🎶</a>`;
+      display.classList.add("show");
+
+      document.body.style.backgroundColor = getRandomColor();
+    }, 100);
+  }
+
+  function submitSuggestion(event) {
+    event.preventDefault();
+    const name = document.getElementById('name').value;
+    const songSuggestion = document.getElementById('songSuggestion').value;
+    const message = document.getElementById('message').value;
+
+    document.getElementById('thanksMessage').innerText = `Thanks ${name}! Your suggestion for "${songSuggestion}" was received! 🎶`;
+
+    document.getElementById('name').value = '';
+    document.getElementById('songSuggestion').value = '';
+    document.getElementById('message').value = '';
+  }
+</script>
+
 </body>
 </html>
