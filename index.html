@@ -99,15 +99,29 @@
     .song-display a:hover {
       color: #388E3C;
     }
-    form input, form textarea {
-      display: block;
+    .form-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
+      margin: 20px auto;
+      overflow: hidden;
+      position: relative;
+    }
+    .form-container iframe {
       width: 100%;
-      max-width: 400px;
-      margin: 10px auto;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
+      height: 1000px;
+      border: none;
+      border-radius: 8px;
+    }
+    #thankYouMessage {
+      display: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4CAF50;
+      margin-top: 50px;
     }
   </style>
 </head>
@@ -136,13 +150,12 @@
 
 <div id="suggestions" class="tab-content">
   <h2>Suggestions</h2>
-  <form onsubmit="submitSuggestion(event)">
-    <input type="text" id="name" placeholder="Your Name" required>
-    <input type="text" id="songSuggestion" placeholder="Song Suggestion" required>
-    <textarea id="message" placeholder="Optional Message"></textarea>
-    <button type="submit">Submit</button>
-  </form>
-  <div id="thanksMessage" style="margin-top:20px; font-size:1.2rem; color:green;"></div>
+  <div class="form-container">
+    <iframe id="suggestionsForm" 
+      src="https://docs.google.com/forms/d/e/1FAIpQLSeDEYQoieQL0605VbQilqM6lNwXLXAapUDHAirX5MvMrBbeug/viewform?embedded=true" 
+      frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    <div id="thankYouMessage">🎉 Thank you for your suggestion! 🎶</div>
+  </div>
 </div>
 
 <script>
@@ -180,18 +193,16 @@
     }, 100);
   }
 
-  function submitSuggestion(event) {
-    event.preventDefault();
-    const name = document.getElementById('name').value;
-    const songSuggestion = document.getElementById('songSuggestion').value;
-    const message = document.getElementById('message').value;
+  // Detect when form is submitted and show thank you
+  window.addEventListener("message", (event) => {
+    const iframe = document.getElementById("suggestionsForm");
+    const thankYou = document.getElementById("thankYouMessage");
 
-    document.getElementById('thanksMessage').innerText = `Thanks ${name}! Your suggestion for "${songSuggestion}" was received! 🎶`;
-
-    document.getElementById('name').value = '';
-    document.getElementById('songSuggestion').value = '';
-    document.getElementById('message').value = '';
-  }
+    if (event.origin.includes("google.com") && event.data.includes("formResponse")) {
+      iframe.style.display = "none";
+      thankYou.style.display = "block";
+    }
+  });
 </script>
 
 </body>
