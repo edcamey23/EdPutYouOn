@@ -158,7 +158,11 @@
   </div>
 </div>
 
-<script>
+
+ <script>
+  let songs = []; // Store all songs here
+  let remainingSongs = []; // Store songs not yet shown
+
   function getRandomColor() {
     const colors = ["#FFCDD2", "#F8BBD0", "#E1BEE7", "#D1C4E9", "#BBDEFB", "#B2EBF2", "#C8E6C9", "#DCEDC8", "#FFF9C4", "#FFE0B2", "#FFCCBC"];
     return colors[Math.floor(Math.random() * colors.length)];
@@ -174,14 +178,29 @@
 
   async function loadSongs() {
     const response = await fetch('songs.json?cacheBust=' + new Date().getTime());
-    return await response.json();
+    const data = await response.json();
+    songs = [...data];         // Load all songs
+    remainingSongs = [...data]; // Also copy into the deck
   }
 
   async function getPutOn() {
-    const songs = await loadSongs();
-    const randomIndex = Math.floor(Math.random() * songs.length);
-    const song = songs[randomIndex];
     const display = document.getElementById("songDisplay");
+
+    if (songs.length === 0) {
+      await loadSongs(); // Load songs on first click
+    }
+
+    if (remainingSongs.length === 0) {
+      display.classList.remove("show");
+      setTimeout(() => {
+        display.innerHTML = `🎉 That's all for now! See you next time! 🎶`;
+        display.classList.add("show");
+      }, 100);
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * remainingSongs.length);
+    const song = remainingSongs.splice(randomIndex, 1)[0]; // Remove song from deck
 
     display.classList.remove("show");
 
@@ -204,6 +223,7 @@
     }
   });
 </script>
+
 
 </body>
 </html>
